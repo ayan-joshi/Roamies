@@ -1,0 +1,130 @@
+@import "tailwindcss";
+
+/*
+ * Roamies design system v0.1: "The noticeboard kit" (Claude Design).
+ * Rule: tilt, tape, pins and handwriting belong to content notes only.
+ * Buttons, inputs and navigation never tilt.
+ */
+
+:root {
+  --bg: #f3eee5;
+  --board: #c9a57b;
+  --paper: #fffdf7;
+  --paper2: #efe8dc;
+  --ink: #1d1a16;
+  --ink2: #5a5044;
+  --line: #d6cbb9;
+  --lime: #d7f25a;
+  --lime-soft: rgba(183, 214, 40, 0.45);
+  --pink: #ffc9dc;
+  --note-ink: #1d1a16;
+  --pin: #c9271f;
+  --err: #b3261e;
+  --err-bg: #fbe9e6;
+  --ok: #2f6f3e;
+  --warn: #8a5a00;
+  --btn-bg: #1d1a16;
+  --btn-fg: #fffdf7;
+  --btn-hover: #3a342c;
+  --btn-press: #000000;
+  --dis-bg: #e6dfd3;
+  --dis-fg: #8a8072;
+  --cork-dot: rgba(70, 40, 10, 0.14);
+  /* Roamies is light-only: keep native inputs, scrollbars and pickers light too. */
+  color-scheme: light;
+}
+
+/* Dark palette from the kit, kept for a possible future toggle. Not applied anywhere today. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #15120f;
+  --board: #2b2219;
+  --paper: #221e19;
+  --paper2: #2e2821;
+  --ink: #f4eee3;
+  --ink2: #bdb1a0;
+  --line: #3d352c;
+  --lime: #cfe84e;
+  --lime-soft: rgba(207, 232, 78, 0.28);
+  --pink: #f4b8cc;
+  --note-ink: #1d1a16;
+  --pin: #ff6b5e;
+  --err: #ff8a7e;
+  --err-bg: #3a1d19;
+  --ok: #86d493;
+  --warn: #f0b64a;
+  --btn-bg: #f4eee3;
+  --btn-fg: #15120f;
+  --btn-hover: #ddd5c8;
+  --btn-press: #ffffff;
+  --dis-bg: #2e2821;
+  --dis-fg: #7d7366;
+  --cork-dot: rgba(0, 0, 0, 0.35);
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-board: var(--board);
+  --color-paper: var(--paper);
+  --color-paper2: var(--paper2);
+  --color-ink: var(--ink);
+  --color-ink2: var(--ink2);
+  --color-line: var(--line);
+  --color-lime: var(--lime);
+  --color-lime-soft: var(--lime-soft);
+  --color-pink: var(--pink);
+  --color-note-ink: var(--note-ink);
+  --color-pin: var(--pin);
+  --color-err: var(--err);
+  --color-err-bg: var(--err-bg);
+  --color-ok: var(--ok);
+  --color-warn: var(--warn);
+  --color-btn-bg: var(--btn-bg);
+  --color-btn-fg: var(--btn-fg);
+  --color-btn-hover: var(--btn-hover);
+  --color-btn-press: var(--btn-press);
+  --color-dis-bg: var(--dis-bg);
+  --color-dis-fg: var(--dis-fg);
+
+  --font-sans: var(--font-bricolage), system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
+  --font-hand: var(--font-kalam), cursive;
+
+  --radius-note: 3px;
+  --radius-field: 12px;
+  --radius-sheet: 18px;
+
+  --shadow-note: 0 8px 14px -8px rgba(40, 20, 0, 0.45);
+  --shadow-pinned: 0 14px 22px -10px rgba(40, 20, 0, 0.6);
+  --shadow-sheet: 0 -6px 24px rgba(40, 20, 0, 0.22);
+  --shadow-pop: 0 12px 24px -12px rgba(0, 0, 0, 0.35);
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+}
+
+/* Focus: 2px ink ring with a 2px gap, visible on paper, cork and notes. */
+:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+/* Cork board: feed and intros background. */
+@utility bg-cork {
+  background-color: var(--board);
+  background-image: radial-gradient(var(--cork-dot) 1px, transparent 1.6px);
+  background-size: 7px 7px;
+}
+
+/* Lined paper for the intro composer. */
+@utility bg-lined {
+  background-image: repeating-linear-gradient(transparent 0 25px, var(--line) 25px 26px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
+}
