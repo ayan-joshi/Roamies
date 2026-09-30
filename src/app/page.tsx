@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { buttonClass } from "@/components/ui/button";
+import { Logo } from "@/components/ui/logo";
 import { Note, type NoteTilt, type NoteTone } from "@/components/ui/note";
 
 const steps: { title: string; body: string; tone: NoteTone; tilt: NoteTilt }[] = [
@@ -11,7 +12,8 @@ const steps: { title: string; body: string; tone: NoteTone; tilt: NoteTilt }[] =
 export default function Home() {
   return (
     <main className="flex flex-1 flex-col">
-      <section className="flex flex-col gap-4 px-6 pt-14 pb-10">
+      <section className="flex flex-col gap-4 px-6 pt-8 pb-10">
+        <Logo size={32} className="mb-4" />
         <p className="font-mono text-xs font-bold tracking-[0.08em] text-ink2">HILLS · BEACHES · EVERYWHERE IN BETWEEN</p>
         <h1 className="text-[40px] leading-[44px] font-extrabold tracking-[-0.02em]">The anti-swipe travel app.</h1>
         <p className="text-[17px] leading-6 font-medium text-ink2">
@@ -43,6 +45,7 @@ export default function Home() {
           <p className="flex justify-center gap-4 pt-2 text-xs font-semibold text-ink">
             <Link href="/privacy" className="underline underline-offset-2">Privacy</Link>
             <Link href="/terms" className="underline underline-offset-2">Terms and safety</Link>
+            <Link href="/feedback" className="underline underline-offset-2">Feedback</Link>
           </p>
         </div>
       </section>

@@ -1,20 +1,29 @@
-import { IntrosView } from "@/components/views/intros-view";
+import { IntrosView, type MatchSummary, type SentIntro } from "@/components/views/intros-view";
 import { requireOnboardedUser } from "@/lib/auth";
 import type { IncomingIntro } from "@/lib/types";
 import { respondToIntro } from "./actions";
 
-type MatchRow = {
+type MyMatch = {
+  match_id: number;
+  other_name: string | null;
+  last_body: string | null;
+  last_from_me: boolean | null;
+  unread: boolean;
+};
+
+type SentRow = {
   id: number;
-  user_a: string;
-  user_b: string;
-  a: { display_name: string | null };
-  b: { display_name: string | null };
+  intro_message: string;
+  target_type: "itinerary" | "prompt";
+  receiver: { display_name: string | null };
+  itinerary: { place: { name: string } } | null;
+  user_prompt: { prompt: { text: string } } | null;
 };
 
 export default async function IntrosPage() {
   const { supabase, userId } = await requireOnboardedUser();
 
-  const [{ data: intros }, { data: matches }, { data: blocks }] = await Promise.all([
+  const [{ data: intros }, { data: matches }, { data: sentRows }] = await Promise.all([
     supabase
       .from("interactions")
       .select(
@@ -26,29 +35,42 @@ export default async function IntrosPage() {
       .eq("receiver_id", userId)
       .eq("status", "pending")
       .order("created_at", { ascending: false }),
+    // Last message + unread flag per match; people you blocked are already left out.
+    supabase.rpc("my_matches"),
     supabase
-      .from("matches")
+      .from("interactions")
       .select(
-        `id, user_a, user_b,
-         a:profiles!matches_user_a_fkey(display_name),
-         b:profiles!matches_user_b_fkey(display_name)`,
+        `id, intro_message, target_type,
+         receiver:profiles!interactions_receiver_id_fkey(display_name),
+         itinerary:itineraries(place:places(name)),
+         user_prompt:user_prompts(prompt:prompts(text))`,
       )
+      .eq("sender_id", userId)
+      .eq("status", "pending")
       .order("created_at", { ascending: false }),
-    supabase.from("blocks").select("blocked_id").eq("blocker_id", userId),
   ]);
-  const blocked = new Set((blocks ?? []).map((b) => b.blocked_id as string));
 
-  // Hide matches with people you blocked.
-  const matchRows = ((matches ?? []) as unknown as MatchRow[]).filter((m) => !blocked.has(m.user_a === userId ? m.user_b : m.user_a));
+  const matchList: MatchSummary[] = ((matches ?? []) as MyMatch[]).map((m) => ({
+    id: m.match_id,
+    name: m.other_name ?? "A traveller",
+    lastBody: m.last_body,
+    lastFromMe: !!m.last_from_me,
+    unread: m.unread,
+  }));
+
+  const sent: SentIntro[] = ((sentRows ?? []) as unknown as SentRow[]).map((s) => ({
+    id: s.id,
+    name: s.receiver.display_name ?? "A traveller",
+    about: s.itinerary ? `their ${s.itinerary.place.name} trip` : s.user_prompt ? s.user_prompt.prompt.text.replace(/\.\.\.$/, "") : "a removed post",
+    message: s.intro_message,
+  }));
 
   return (
     <IntrosView
       basePath=""
       pending={(intros ?? []) as unknown as IncomingIntro[]}
-      matches={matchRows.map((m) => ({
-        id: m.id,
-        name: (m.user_a === userId ? m.b : m.a).display_name ?? "A traveller",
-      }))}
+      matches={matchList}
+      sent={sent}
       respond={respondToIntro}
     />
   );

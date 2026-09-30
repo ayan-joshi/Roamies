@@ -43,6 +43,18 @@ export function AccountView({ name, email, signOut, emailAlerts, setEmailAlerts,
       )}
 
       <section className="flex flex-col gap-2 rounded-sheet bg-paper p-4">
+        <Link href="/profile" className="flex min-h-12 items-center justify-between rounded-field px-1 font-semibold hover:bg-paper2">
+          Edit profile <span aria-hidden>→</span>
+        </Link>
+        <Link href="/share" className="flex min-h-12 items-center justify-between rounded-field px-1 font-semibold hover:bg-paper2">
+          Share Roamies (QR code) <span aria-hidden>→</span>
+        </Link>
+        <Link href="/feedback?from=/account" className="flex min-h-12 items-center justify-between rounded-field px-1 font-semibold hover:bg-paper2">
+          Send feedback <span aria-hidden>→</span>
+        </Link>
+      </section>
+
+      <section className="flex flex-col gap-2 rounded-sheet bg-paper p-4">
         <Link href="/privacy" className="flex min-h-12 items-center justify-between rounded-field px-1 font-semibold hover:bg-paper2">
           Privacy policy <span aria-hidden>→</span>
         </Link>

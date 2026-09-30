@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { MatchMoment } from "@/components/ui/match-moment";
 import { Note } from "@/components/ui/note";
 import { VerifiedBadge } from "@/components/ui/verified-badge";
 import type { RoomContext } from "@/lib/types";
@@ -11,6 +12,7 @@ type Props = {
   matchedOn: string;
   context: RoomContext;
   safetyHref: string;
+  justMatched?: boolean;
   banner?: ReactNode;
   children: ReactNode;
 };
@@ -18,9 +20,10 @@ type Props = {
 const day = new Intl.DateTimeFormat("en-IN", { day: "numeric", month: "short", timeZone: "Asia/Kolkata" });
 
 // The planning room: what you matched over stays pinned at the top, the chat runs below.
-export function RoomView({ backHref, otherName, verified, matchedOn, context, safetyHref, banner, children }: Props) {
+export function RoomView({ backHref, otherName, verified, matchedOn, context, safetyHref, justMatched, banner, children }: Props) {
   return (
     <main className="flex min-h-dvh flex-1 flex-col">
+      {justMatched && <MatchMoment name={otherName} />}
       {banner}
       <header className="sticky top-0 z-10 flex items-center gap-2 border-b-[1.5px] border-line bg-bg px-2 py-1.5">
         <Link href={backHref} aria-label="Back to intros and matches" className="flex size-12 items-center justify-center rounded-full text-xl hover:bg-paper2">

@@ -1,6 +1,6 @@
 import "server-only";
 import { DAILY_INTROS } from "@/lib/constants";
-import { DEMO_EXISTING_MATCHES, demoBaseTrips, demoFeed, demoIncoming } from "./data";
+import { DEMO_EXISTING_MATCHES, demoBaseTrips, demoFeed, demoIncoming, demoPersonName, demoRoom } from "./data";
 import type { DemoState } from "./state";
 
 // Derive what each demo screen shows from the sample data plus the visitor's actions.
@@ -23,13 +23,19 @@ export function demoFeedFor(state: DemoState, radiusKm: number) {
 
 export function demoIntrosFor(state: DemoState) {
   const incoming = demoIncoming();
+  const withPreview = (id: number, name: string) => {
+    const room = demoRoom(id);
+    const last = room?.history.at(-1);
+    return { id, name, lastBody: last?.body ?? null, lastFromMe: !!last?.fromMe, unread: !!last && !last.fromMe };
+  };
   return {
     pending: incoming.filter((i) => !state.responded[String(i.id)]),
     matches: [
       ...incoming
         .filter((i) => state.responded[String(i.id)] === "accepted")
-        .map((i) => ({ id: i.id, name: i.sender.display_name ?? "A traveller" })),
-      ...DEMO_EXISTING_MATCHES,
+        .map((i) => withPreview(i.id, i.sender.display_name ?? "A traveller")),
+      ...DEMO_EXISTING_MATCHES.map((m) => withPreview(m.id, m.name)),
     ],
+    sent: state.sent.map((userId, i) => ({ id: i + 1, name: demoPersonName(userId), about: "their trip or prompt", message: "your intro" })),
   };
 }

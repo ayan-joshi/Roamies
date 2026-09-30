@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { requireOnboardedUser } from "@/lib/auth";
 import { notifyMatch } from "@/lib/notify";
 
@@ -22,7 +23,11 @@ export async function respondToIntro(form: FormData) {
 
   if (updated && status === "accepted") {
     const { data: match } = await supabase.from("matches").select("id").eq("interaction_id", id).maybeSingle();
-    if (match) notifyMatch({ senderId: updated.sender_id, accepterName: profile.display_name ?? "A traveller", matchId: match.id });
+    if (match) {
+      notifyMatch({ senderId: updated.sender_id, accepterName: profile.display_name ?? "A traveller", matchId: match.id });
+      revalidatePath("/intros");
+      redirect(`/matches/${match.id}?new=1`);
+    }
   }
 
   revalidatePath("/intros");

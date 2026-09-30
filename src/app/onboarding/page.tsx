@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { Logo } from "@/components/ui/logo";
 import { requireUser } from "@/lib/auth";
 import type { Place, Prompt } from "@/lib/types";
 import { completeOnboarding } from "./actions";
@@ -10,7 +11,7 @@ export default async function OnboardingPage() {
   const [{ data: profile }, { data: prompts }, { data: places }] = await Promise.all([
     supabase.from("profiles").select("display_name, onboarded_at").eq("id", userId).single(),
     supabase.from("prompts").select("id, text, placeholder, category").order("id"),
-    supabase.from("places").select("id, name, circuit").order("circuit").order("name"),
+    supabase.from("places").select("id, name, circuit, kind").order("circuit").order("name"),
   ]);
 
   if (profile?.onboarded_at) redirect("/feed");
@@ -21,7 +22,7 @@ export default async function OnboardingPage() {
 
   return (
     <main className="flex flex-1 flex-col gap-6 px-4 pt-6 pb-8">
-      <p className="text-xl font-extrabold tracking-[-0.02em]">roamies</p>
+      <Logo />
       <OnboardingForm
         defaultName={profile?.display_name ?? ""}
         prompts={(prompts ?? []) as Prompt[]}

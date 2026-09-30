@@ -13,12 +13,14 @@ export type FeedViewProps = {
   answersByUser: Record<string, PromptAnswer[]>;
   introsLeft: number;
   hasUpcomingTrip: boolean;
+  /** Filled only when nobody is within the radius: travellers anywhere on overlapping dates. */
+  widerItems?: FeedItem[];
   loadError?: boolean;
   actions: FeedActions;
 };
 
 // Pure view: the real /feed page and /demo/feed both render this with their own data and actions.
-export function FeedView({ basePath, radiusKm, items, answersByUser, introsLeft, hasUpcomingTrip, loadError, actions }: FeedViewProps) {
+export function FeedView({ basePath, radiusKm, items, answersByUser, introsLeft, hasUpcomingTrip, widerItems = [], loadError, actions }: FeedViewProps) {
   return (
     <main className="flex flex-1 flex-col gap-4 bg-cork px-4 pt-4 pb-8">
       <nav aria-label="Distance" className="flex items-center gap-2">
@@ -48,6 +50,13 @@ export function FeedView({ basePath, radiusKm, items, answersByUser, introsLeft,
           line="no trip, no feed. post where you're headed and we'll show who else is."
           action={{ href: `${basePath}/trips`, label: "Add a trip" }}
         />
+      ) : items.length === 0 && widerItems.length > 0 ? (
+        <>
+          <p className="rounded-sheet bg-paper px-4 py-3 text-[15px] leading-snug">
+            <strong>Nobody within {radiusKm} km yet.</strong> These travellers are further away but on your dates. Plans change, say hi anyway.
+          </p>
+          <FeedList basePath={basePath} items={widerItems} answersByUser={answersByUser} initialLeft={introsLeft} actions={actions} />
+        </>
       ) : items.length === 0 ? (
         <EmptyNote
           line="no one's heading your way yet. widen the radius or touch grass"

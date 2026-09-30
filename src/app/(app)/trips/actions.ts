@@ -9,7 +9,6 @@ export async function addTrip(_prev: ActionState, form: FormData): Promise<Actio
   const { supabase, userId } = await requireOnboardedUser();
   const trip = parseTrip(form);
   if (typeof trip === "string") return { error: trip };
-  if (trip.start_date < new Date().toISOString().slice(0, 10)) return { error: "Trips must start today or later." };
 
   const { error } = await supabase.from("itineraries").insert({ ...trip, user_id: userId });
   if (error) return { error: friendlyDbError(error) };

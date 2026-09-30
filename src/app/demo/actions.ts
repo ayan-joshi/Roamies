@@ -40,6 +40,7 @@ export async function demoRespond(form: FormData) {
   state.responded[id] = status;
   await writeDemoState(state);
   revalidatePath("/demo", "layout");
+  if (status === "accepted") redirect(`/demo/matches/${id}?new=1`);
 }
 
 export async function demoAddTrip(_prev: ActionState, form: FormData): Promise<ActionState> {

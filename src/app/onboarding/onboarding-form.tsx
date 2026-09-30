@@ -1,14 +1,13 @@
 "use client";
 
 import { startTransition, useActionState, useRef, useState } from "react";
+import { PromptPicker, togglePicked } from "@/components/prompt-picker";
 import { TripFields } from "@/components/trip-fields";
 import { Button } from "@/components/ui/button";
 import { ChipRadioGroup } from "@/components/ui/chip";
 import { DateInput, Field, TextInput } from "@/components/ui/field";
-import { RadioMarker } from "@/components/ui/note";
 import { Notice } from "@/components/ui/notice";
-import { TextareaWithCount } from "@/components/ui/textarea-count";
-import { ANSWER_MAX, GENDERS } from "@/lib/constants";
+import { GENDERS } from "@/lib/constants";
 import type { ActionState, Place, Prompt } from "@/lib/types";
 
 const STEPS = [
@@ -46,10 +45,6 @@ export function OnboardingForm({ defaultName, prompts, places, maxBirthDate, com
     startTransition(() => action(data));
   }
 
-  function togglePrompt(id: number) {
-    setPicked((cur) => (cur.includes(id) ? cur.filter((p) => p !== id) : cur.length < 2 ? [...cur, id] : cur));
-  }
-
   const canContinue = step !== 1 || picked.length === 2;
 
   // One form across all steps (hidden, not unmounted) so a single submit sends everything.
@@ -83,46 +78,7 @@ export function OnboardingForm({ defaultName, prompts, places, maxBirthDate, com
 
       <fieldset data-step={1} hidden={step !== 1} className="flex flex-col gap-3">
         <legend className="sr-only">Pick exactly 2 prompts</legend>
-        <p className="font-mono text-xs font-bold" aria-live="polite">
-          {picked.length} / 2 PICKED{picked.length === 2 && " · unpick one to swap"}
-        </p>
-        {prompts.map((p) => {
-          const on = picked.includes(p.id);
-          const locked = !on && picked.length === 2;
-          return (
-            <div
-              key={p.id}
-              className={`flex flex-col gap-3 rounded-field border-[1.5px] p-3.5 ${
-                on ? "border-ink bg-paper" : locked ? "border-transparent bg-dis-bg text-dis-fg" : "border-line bg-paper"
-              }`}
-            >
-              <label className={`flex min-h-6 items-start justify-between gap-3 ${locked ? "cursor-not-allowed" : "cursor-pointer"}`}>
-                <span className="font-semibold">{p.text}</span>
-                <input
-                  type="checkbox"
-                  name="prompt_id"
-                  value={p.id}
-                  checked={on}
-                  disabled={locked}
-                  onChange={() => togglePrompt(p.id)}
-                  className="peer sr-only"
-                />
-                <span className="rounded-full peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-ink">
-                  <RadioMarker checked={on} />
-                </span>
-              </label>
-              {on && (
-                <TextareaWithCount
-                  name={`answer_${p.id}`}
-                  aria-label={`Your answer to: ${p.text}`}
-                  placeholder={p.placeholder}
-                  max={ANSWER_MAX}
-                  required
-                />
-              )}
-            </div>
-          );
-        })}
+        <PromptPicker prompts={prompts} picked={picked} onToggle={(id) => setPicked((cur) => togglePicked(cur, id))} />
       </fieldset>
 
       <div data-step={2} hidden={step !== 2}>

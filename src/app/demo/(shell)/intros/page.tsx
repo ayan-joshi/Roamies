@@ -4,6 +4,6 @@ import { readDemoState } from "@/lib/demo/state";
 import { demoRespond } from "../../actions";
 
 export default async function DemoIntrosPage() {
-  const { pending, matches } = demoIntrosFor(await readDemoState());
-  return <IntrosView basePath="/demo" pending={pending} matches={matches} respond={demoRespond} />;
+  const { pending, matches, sent } = demoIntrosFor(await readDemoState());
+  return <IntrosView basePath="/demo" pending={pending} matches={matches} sent={sent} respond={demoRespond} />;
 }

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LogoMark } from "@/components/ui/logo";
 import { Notice } from "@/components/ui/notice";
 import { LoginForm } from "./login-form";
 
@@ -13,6 +14,7 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
       </Link>
 
       <div className="flex flex-col gap-2">
+        <LogoMark size={48} className="mb-2" />
         <h1 className="text-[28px] leading-8 font-extrabold tracking-[-0.01em]">Sign in</h1>
         <p className="text-[17px] leading-6 font-medium text-ink2">Post your trip and meet people on the same route.</p>
       </div>

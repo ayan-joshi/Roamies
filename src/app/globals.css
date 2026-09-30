@@ -128,3 +128,47 @@ body {
     transition: none !important;
   }
 }
+
+/* Match moment (logo spec): 0ms apart -> 280ms slide -> 420ms lens -> 600ms settle. */
+.match-moment .mm-left {
+  animation: mm-left 600ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.match-moment .mm-right {
+  animation: mm-right 600ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.match-moment .mm-lens {
+  animation: mm-lens 600ms ease-out both;
+}
+.match-moment .mm-text {
+  animation: mm-text 400ms ease-out 450ms both;
+}
+@keyframes mm-left {
+  0% { transform: translateX(-12px); }
+  47% { transform: translateX(0.8px); }
+  70% { transform: translateX(-0.4px); }
+  100% { transform: translateX(0); }
+}
+@keyframes mm-right {
+  0% { transform: translateX(12px); }
+  47% { transform: translateX(-0.8px); }
+  70% { transform: translateX(0.4px); }
+  100% { transform: translateX(0); }
+}
+@keyframes mm-lens {
+  0%, 60% { opacity: 0; }
+  100% { opacity: 1; }
+}
+@keyframes mm-text {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .match-moment .mm-left,
+  .match-moment .mm-right,
+  .match-moment .mm-text {
+    animation: none;
+  }
+  .match-moment .mm-lens {
+    animation: mm-lens 400ms ease-out both !important;
+  }
+}

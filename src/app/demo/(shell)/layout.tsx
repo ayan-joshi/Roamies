@@ -14,9 +14,14 @@ export default async function DemoLayout({ children }: LayoutProps<"/demo">) {
       banner={
         <div className="flex items-center justify-between gap-2 bg-lime px-4 py-1.5 font-mono text-[11px] font-bold tracking-[0.06em] text-note-ink">
           <span>DEMO · SAMPLE TRAVELLERS</span>
-          <form action={demoReset}>
-            <button className="min-h-8 rounded-full px-2 underline underline-offset-2">RESET</button>
-          </form>
+          <span className="flex items-center gap-1">
+            <Link href="/feedback?from=/demo/feed" className="flex min-h-8 items-center rounded-full px-2 underline underline-offset-2">
+              FEEDBACK
+            </Link>
+            <form action={demoReset}>
+              <button className="min-h-8 rounded-full px-2 underline underline-offset-2">RESET</button>
+            </form>
+          </span>
         </div>
       }
       headerAction={

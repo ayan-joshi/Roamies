@@ -14,7 +14,7 @@ export default async function TripsPage() {
       .eq("user_id", userId)
       .gte("end_date", today)
       .order("start_date"),
-    supabase.from("places").select("id, name, circuit").order("circuit").order("name"),
+    supabase.from("places").select("id, name, circuit, kind").order("circuit").order("name"),
   ]);
 
   return (

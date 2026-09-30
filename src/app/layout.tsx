@@ -9,9 +9,17 @@ const jetbrains = JetBrains_Mono({ variable: "--font-jetbrains", subsets: ["lati
 // Handwritten answers and signature lines only, never below 17px
 const kalam = Kalam({ variable: "--font-kalam", subsets: ["latin", "devanagari"], weight: ["400", "700"] });
 
+const description = "The anti-swipe travel app. Find someone headed the same way on the same dates.";
+
 export const metadata: Metadata = {
+  // Absolute URLs for the link preview image (WhatsApp, Instagram, X).
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
   title: "Roamies",
-  description: "The anti-swipe travel app. Designed to be closed once you book your trip.",
+  description,
+  applicationName: "Roamies",
+  appleWebApp: { capable: true, title: "Roamies", statusBarStyle: "default" },
+  openGraph: { title: "Roamies", description, siteName: "Roamies", type: "website", locale: "en_IN" },
+  twitter: { card: "summary_large_image", title: "Roamies", description },
 };
 
 export const viewport: Viewport = {

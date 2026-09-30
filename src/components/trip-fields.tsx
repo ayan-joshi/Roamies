@@ -7,6 +7,7 @@ import type { Place } from "@/lib/types";
 // Shared by onboarding and "add a trip". Field names are parsed by parseTrip().
 export function TripFields({ places, idPrefix = "trip" }: { places: Place[]; idPrefix?: string }) {
   const today = new Date().toISOString().slice(0, 10);
+  // Start can be in the past: many travellers add a trip they're already on.
   const id = (name: string) => `${idPrefix}-${name}`;
 
   return (
@@ -15,7 +16,7 @@ export function TripFields({ places, idPrefix = "trip" }: { places: Place[]; idP
 
       <div className="grid grid-cols-2 gap-3">
         <Field id={id("start")} label="Start date">
-          <DateInput id={id("start")} name="start_date" min={today} required />
+          <DateInput id={id("start")} name="start_date" required />
         </Field>
         <Field id={id("end")} label="End date">
           <DateInput id={id("end")} name="end_date" min={today} required />

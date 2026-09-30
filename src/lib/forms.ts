@@ -22,10 +22,17 @@ export function parseTrip(form: FormData): TripInput | string {
   if (!Number.isInteger(place_id) || place_id <= 0) return "Choose a destination.";
   if (!start_date || !end_date) return "Add your trip dates.";
   if (end_date < start_date) return "The trip ends before it starts.";
+  // Trips may already be under way (people join mid-trip); they just can't be over.
+  if (end_date < todayIST()) return "That trip has already ended. Pick dates that end today or later.";
   if (!(BUDGETS as readonly string[]).includes(budget_bracket)) return "Choose a budget.";
   if (!(VIBES as readonly string[]).includes(vibe_tag)) return "Choose a vibe.";
 
   return { place_id, start_date, end_date, budget_bracket, vibe_tag, note: str(form, "note") || null };
+}
+
+/** Today's date in India as YYYY-MM-DD. */
+export function todayIST() {
+  return new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Kolkata" }).format(new Date());
 }
 
 export type IntroInput = {

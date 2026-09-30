@@ -68,5 +68,6 @@ npm run dev
 - [x] **Week 2:** atomic onboarding RPC (2 prompts + first trip), feed with radius filter, comment-to-connect on a trip or prompt, skip, intros inbox (accept/decline), trips page. UI is deliberately unstyled until the final design lands.
 - [x] **Week 3 (part 1):** planning room chat at `/matches/[id]` with the matched trip or prompt pinned on top, live via Supabase Realtime (`postgres_changes`, RLS-scoped), plus a demo room
 - [x] **Launch prep:** report/block, delete account, privacy + terms pages, email alerts (Resend, opt-out in Account), 169 places across India with a searchable picker, verified badge hidden until real verification exists
+- [x] **Brand + launch gaps:** Meeting-pins logo (favicon, PWA icons, link preview, 600ms match moment), 253 places with treks/beaches/spots, trips already under way, wider-net feed when nobody is nearby, unread chats, share/QR page, feedback, edit profile, "You sent" list; deleting a trip or prompt no longer deletes chats
 - [ ] **Week 3 (part 2):** ID verification
 - [ ] **Week 4:** Vercel deploy, custom domain, alpha launch

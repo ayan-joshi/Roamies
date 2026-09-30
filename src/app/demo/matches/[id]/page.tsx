@@ -6,7 +6,7 @@ import { demoIntrosFor } from "@/lib/demo/selectors";
 import { readDemoState } from "@/lib/demo/state";
 import { demoSendMessage } from "../../actions";
 
-export default async function DemoRoomPage({ params }: PageProps<"/demo/matches/[id]">) {
+export default async function DemoRoomPage({ params, searchParams }: PageProps<"/demo/matches/[id]">) {
   const matchId = Number((await params).id);
   const { matches } = demoIntrosFor(await readDemoState());
   const room = demoRoom(matchId);
@@ -17,6 +17,7 @@ export default async function DemoRoomPage({ params }: PageProps<"/demo/matches/
 
   return (
     <RoomView
+      justMatched={(await searchParams).new === "1"}
       backHref="/demo/intros"
       safetyHref={`/demo/safety/${room.otherId}?match=${matchId}`}
       otherName={room.otherName}

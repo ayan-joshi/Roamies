@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { BottomNav } from "@/components/ui/bottom-nav";
+import { Logo } from "@/components/ui/logo";
 
 type Props = {
   basePath: string;
@@ -15,7 +16,7 @@ export function AppShell({ basePath, introCount, headerAction, banner, children 
     <>
       {banner}
       <header className="flex items-center justify-between border-b-[1.5px] border-line bg-bg px-4 py-2">
-        <span className="text-xl font-extrabold tracking-[-0.02em]">roamies</span>
+        <Logo />
         {headerAction}
       </header>
 

@@ -1,11 +1,13 @@
 "use client";
 
-import { useId, useMemo, useRef, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import type { Place } from "@/lib/types";
 import { controlClass } from "./field";
 
 // Shown before typing. Only names that exist in `places` are used.
-const POPULAR = ["Rishikesh", "Manali", "Kasol", "Goa", "Anjuna", "Leh", "Varanasi", "Jaipur", "Udaipur", "Gokarna", "Hampi", "Varkala", "Munnar", "Darjeeling", "Shillong", "McLeod Ganj"];
+const POPULAR = ["Rishikesh", "Manali", "Kasol", "Triund", "Kedarkantha", "Leh", "Anjuna", "Varanasi", "Jaipur", "Udaipur", "Gokarna", "Hampi", "Varkala", "Darjeeling", "Shillong", "McLeod Ganj"];
+
+const KIND_LABEL: Record<string, string> = { trek: "TREK", beach: "BEACH", spot: "SPOT" };
 
 const MAX_RESULTS = 8;
 
@@ -41,6 +43,8 @@ export function PlacePicker({ id, name, label, places, required }: Props) {
       if (n.split(/[\s(]+/).some((w) => w.startsWith(q))) return 1;
       if (n.includes(q)) return 2;
       if (p.circuit.toLowerCase().includes(q)) return 3;
+      // "trek", "beach", "spot" (or "treks") list every place of that kind
+      if (p.kind && p.kind !== "town" && (q.startsWith(p.kind) || p.kind.startsWith(q))) return 4;
       return 9;
     };
     return places
@@ -50,6 +54,21 @@ export function PlacePicker({ id, name, label, places, required }: Props) {
       .slice(0, MAX_RESULTS)
       .map((x) => x.p);
   }, [query, places]);
+
+  // Clear with the rest of the form (e.g. after "Add trip" succeeds), so the next trip
+  // doesn't silently reuse the previous destination.
+  useEffect(() => {
+    const form = inputRef.current?.form;
+    if (!form) return;
+    const onReset = () => {
+      setSelected(null);
+      setQuery("");
+      setOpen(false);
+      inputRef.current?.setCustomValidity("");
+    };
+    form.addEventListener("reset", onReset);
+    return () => form.removeEventListener("reset", onReset);
+  }, []);
 
   function choose(place: Place) {
     setSelected(place);
@@ -108,7 +127,12 @@ export function PlacePicker({ id, name, label, places, required }: Props) {
         className={controlClass(false, "h-12 px-3.5")}
       />
       <input type="hidden" name={name} value={selected?.id ?? ""} />
-      {selected && <p className="font-mono text-xs font-medium text-ink2">{selected.circuit.toUpperCase()}</p>}
+      {selected && (
+        <p className="font-mono text-xs font-medium text-ink2">
+          {selected.kind && KIND_LABEL[selected.kind] ? `${KIND_LABEL[selected.kind]} · ` : ""}
+          {selected.circuit.toUpperCase()}
+        </p>
+      )}
 
       {showList && (
         <ul
@@ -133,7 +157,12 @@ export function PlacePicker({ id, name, label, places, required }: Props) {
                 }`}
               >
                 <span>{p.name}</span>
-                <span className={`text-xs ${isSel ? "" : "text-ink2"}`}>{isSel ? "✓" : p.circuit}</span>
+                <span className={`flex items-center gap-1.5 text-xs ${isSel ? "" : "text-ink2"}`}>
+                  {p.kind && KIND_LABEL[p.kind] && (
+                    <span className="rounded-full border-[1.5px] border-current px-1.5 font-mono text-[10px] font-bold">{KIND_LABEL[p.kind]}</span>
+                  )}
+                  {isSel ? "✓" : p.circuit}
+                </span>
               </li>
             );
           })}

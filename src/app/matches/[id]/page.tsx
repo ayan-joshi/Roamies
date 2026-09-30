@@ -23,7 +23,7 @@ type MatchRow = {
   };
 };
 
-export default async function MatchRoomPage({ params }: PageProps<"/matches/[id]">) {
+export default async function MatchRoomPage({ params, searchParams }: PageProps<"/matches/[id]">) {
   const { supabase, userId } = await requireOnboardedUser();
   const matchId = Number((await params).id);
   if (!Number.isInteger(matchId)) notFound();
@@ -49,6 +49,11 @@ export default async function MatchRoomPage({ params }: PageProps<"/matches/[id]
   const m = match as unknown as MatchRow;
   const otherId = m.user_a === userId ? m.user_b : m.user_a;
   const other = m.user_a === userId ? m.b : m.a;
+  // Opening the room marks it read (drives the unread dot and nav badge).
+  await supabase
+    .from("match_reads")
+    .upsert({ user_id: userId, match_id: matchId, last_read_at: new Date().toISOString() }, { onConflict: "user_id,match_id" });
+
   const { count: iBlocked } = await supabase
     .from("blocks")
     .select("blocked_id", { count: "exact", head: true })
@@ -76,7 +81,7 @@ export default async function MatchRoomPage({ params }: PageProps<"/matches/[id]
   };
 
   return (
-    <RoomView backHref="/intros" safetyHref={`/safety/${otherId}?match=${matchId}`} otherName={otherName} verified={other.verification_status === "verified"} matchedOn={m.created_at} context={context}>
+    <RoomView justMatched={(await searchParams).new === "1"} backHref="/intros" safetyHref={`/safety/${otherId}?match=${matchId}`} otherName={otherName} verified={other.verification_status === "verified"} matchedOn={m.created_at} context={context}>
       <ChatRoom
         mode="live"
         matchId={matchId}

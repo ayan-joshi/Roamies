@@ -5,14 +5,18 @@ import { VerifiedBadge } from "@/components/ui/verified-badge";
 import { formatRange } from "@/lib/format";
 import type { IncomingIntro } from "@/lib/types";
 
+export type MatchSummary = { id: number; name: string; lastBody?: string | null; lastFromMe?: boolean; unread?: boolean };
+export type SentIntro = { id: number; name: string; about: string; message: string };
+
 export type IntrosViewProps = {
   basePath: string;
   pending: IncomingIntro[];
-  matches: { id: number; name: string }[];
+  matches: MatchSummary[];
+  sent: SentIntro[];
   respond: (form: FormData) => Promise<void>;
 };
 
-export function IntrosView({ basePath, pending, matches, respond }: IntrosViewProps) {
+export function IntrosView({ basePath, pending, matches, sent, respond }: IntrosViewProps) {
   return (
     <main className="flex flex-1 flex-col gap-8 bg-cork px-4 pt-5 pb-8">
       <section aria-labelledby="pending-heading" className="flex flex-col gap-4">
@@ -86,20 +90,52 @@ export function IntrosView({ basePath, pending, matches, respond }: IntrosViewPr
               <li key={m.id}>
                 <Link
                   href={`${basePath}/matches/${m.id}`}
-                  className="flex min-h-14 items-center justify-between gap-3 rounded-sheet bg-paper px-4 hover:bg-paper2"
+                  className="flex min-h-16 items-center justify-between gap-3 rounded-sheet bg-paper px-4 py-2.5 hover:bg-paper2"
                 >
-                  <span className="font-bold">{m.name}</span>
-                  <span className="flex items-center gap-2">
-                    <span className="font-hand text-[17px] font-bold">it&apos;s a trip</span>
-                    <span aria-hidden className="text-lg">→</span>
-                    <span className="sr-only">Open planning room</span>
+                  <span className="min-w-0 flex-1">
+                    <span className={`block ${m.unread ? "font-extrabold" : "font-bold"}`}>{m.name}</span>
+                    {m.lastBody ? (
+                      <span className={`block truncate text-sm ${m.unread ? "font-semibold text-ink" : "text-ink2"}`}>
+                        {m.lastFromMe ? "You: " : ""}
+                        {m.lastBody}
+                      </span>
+                    ) : (
+                      <span className="block font-hand text-[17px] font-bold">it&apos;s a trip, say hi</span>
+                    )}
                   </span>
+                  {m.unread && (
+                    <span className="size-2.5 shrink-0 rounded-full bg-pin">
+                      <span className="sr-only">New</span>
+                    </span>
+                  )}
+                  <span aria-hidden className="text-lg">→</span>
+                  <span className="sr-only">Open planning room</span>
                 </Link>
               </li>
             ))}
           </ul>
         )}
       </section>
+
+      {sent.length > 0 && (
+        <section aria-labelledby="sent-heading" className="flex flex-col gap-3">
+          <h2 id="sent-heading" className="text-xl leading-[26px] font-bold text-ink">
+            You sent
+          </h2>
+          <ul className="flex flex-col gap-2">
+            {sent.map((s) => (
+              <li key={s.id} className="flex flex-col gap-1 rounded-sheet bg-paper px-4 py-3">
+                <p className="flex items-baseline justify-between gap-2">
+                  <span className="font-bold">{s.name}</span>
+                  <span className="font-mono text-[11px] font-bold tracking-[0.06em] text-ink2">WAITING</span>
+                </p>
+                <p className="font-mono text-[11px] font-bold tracking-[0.04em] text-ink2">ON {s.about.toUpperCase()}</p>
+                <p className="line-clamp-2 text-sm text-ink2">&ldquo;{s.message}&rdquo;</p>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
     </main>
   );
 }

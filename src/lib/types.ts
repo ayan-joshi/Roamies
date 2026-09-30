@@ -3,7 +3,8 @@
 export type ActionState = { error?: string; ok?: boolean; left?: number } | null;
 
 // circuit = region/state label, e.g. "Himachal", "Rajasthan", "Kerala"
-export type Place = { id: number; name: string; circuit: string };
+export type PlaceKind = "town" | "trek" | "beach" | "spot";
+export type Place = { id: number; name: string; circuit: string; kind?: PlaceKind };
 export type Prompt = { id: number; text: string; placeholder: string; category: string };
 
 export type FeedItem = {

@@ -21,8 +21,15 @@ export default async function FeedPage({ searchParams }: PageProps<"/feed">) {
 
   const items = (feed ?? []) as FeedItem[];
 
+  // Cold start: if nobody is nearby, show anyone in India whose dates overlap.
+  let widerItems: FeedItem[] = [];
+  if (!error && items.length === 0 && upcomingTrips) {
+    const { data: wider } = await supabase.rpc("get_feed", { radius_km: 4000 });
+    widerItems = (wider ?? []) as FeedItem[];
+  }
+
   // One query for everyone's prompt answers instead of one per card.
-  const userIds = [...new Set(items.map((i) => i.user_id))];
+  const userIds = [...new Set([...items, ...widerItems].map((i) => i.user_id))];
   const { data: answers } = userIds.length
     ? await supabase
         .from("user_prompts")
@@ -43,6 +50,7 @@ export default async function FeedPage({ searchParams }: PageProps<"/feed">) {
       answersByUser={answersByUser}
       introsLeft={introsLeft ?? 0}
       hasUpcomingTrip={!!upcomingTrips}
+      widerItems={widerItems}
       loadError={!!error}
       actions={{ sendIntro, skip: skipTraveller }}
     />
