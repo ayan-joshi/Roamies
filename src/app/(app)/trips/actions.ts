@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { friendlyDbError, requireOnboardedUser } from "@/lib/auth";
 import { parseTrip } from "@/lib/forms";
 import type { ActionState } from "@/lib/types";
@@ -15,7 +16,7 @@ export async function addTrip(_prev: ActionState, form: FormData): Promise<Actio
 
   revalidatePath("/trips");
   revalidatePath("/feed");
-  return { ok: true };
+  redirect("/trips?saved=1");
 }
 
 export async function deleteTrip(form: FormData) {

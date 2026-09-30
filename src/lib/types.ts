@@ -37,7 +37,7 @@ export type Trip = {
   budget_bracket: string;
   vibe_tag: string;
   note: string | null;
-  place: { name: string };
+  place: { name: string; circuit?: string };
 };
 
 export type IncomingIntro = {

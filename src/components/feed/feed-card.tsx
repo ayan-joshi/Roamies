@@ -29,6 +29,8 @@ type Props = {
   onSending: () => void;
   onSent: (left: number) => void;
   onSkipped: (userId: string) => void;
+  /** Bold the distance (used in the "further away" feed, where distance is the news). */
+  emphasizeDistance?: boolean;
 };
 
 // Prompt notes alternate lime/pink with opposite tilts, like the design.
@@ -38,7 +40,7 @@ const PROMPT_LOOKS: { tone: NoteTone; tilt: NoteTilt; tick: string }[] = [
 ];
 
 // Direction 1c "Hostel noticeboard": three states, default / item selected + composer / intro sent.
-export function FeedCard({ item, answers, left, shotNumber, actions, reportHref, onSending, onSent, onSkipped }: Props) {
+export function FeedCard({ item, answers, left, shotNumber, actions, reportHref, onSending, onSent, onSkipped, emphasizeDistance }: Props) {
   const name = item.display_name ?? "This traveller";
   const [target, setTarget] = useState<Target | null>(null);
   const [draft, setDraft] = useState("");
@@ -106,7 +108,9 @@ export function FeedCard({ item, answers, left, shotNumber, actions, reportHref,
           <p className="flex flex-wrap items-baseline gap-x-2.5">
             <span className="text-[40px] leading-[1.05] font-extrabold tracking-[-0.02em]">{item.place_name}</span>
             <span className="text-sm font-medium text-ink2">
-              {item.circuit} · {Math.round(Number(item.distance_km))} km from your {item.my_place_name} trip
+              {item.circuit} ·{" "}
+              <span className={emphasizeDistance ? "font-bold text-ink" : ""}>{Math.round(Number(item.distance_km))} km</span> from your{" "}
+              {item.my_place_name} trip
             </span>
           </p>
           <p className="mt-1 font-mono text-sm font-bold">
@@ -196,7 +200,7 @@ export function FeedCard({ item, answers, left, shotNumber, actions, reportHref,
           {state?.error && !state.error.includes("characters") && <Notice tone="error">{state.error}</Notice>}
 
           <div className="flex gap-2">
-            <Button type="button" variant="ghost" className="bg-paper" onClick={() => setTarget(null)}>
+            <Button type="button" variant="secondary" onClick={() => setTarget(null)}>
               Cancel
             </Button>
             <Button
@@ -220,7 +224,7 @@ export function FeedCard({ item, answers, left, shotNumber, actions, reportHref,
             }}
           >
             <input type="hidden" name="user_id" value={item.user_id} />
-            <Button type="submit" variant="ghost" className="w-full bg-paper">
+            <Button type="submit" variant="secondary" className="w-full">
               not my vibe
             </Button>
           </form>

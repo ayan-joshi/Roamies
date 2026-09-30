@@ -1,9 +1,8 @@
-import Link from "next/link";
-import { AppShell } from "@/components/views/app-shell";
+import { AppShell, AvatarLink } from "@/components/views/app-shell";
 import { requireOnboardedUser } from "@/lib/auth";
 
 export default async function AppLayout({ children }: LayoutProps<"/">) {
-  const { supabase, userId } = await requireOnboardedUser();
+  const { supabase, userId, profile } = await requireOnboardedUser();
 
   // Badge = intros waiting for you + chats with unread messages.
   const [{ count }, { data: matches }] = await Promise.all([
@@ -16,11 +15,7 @@ export default async function AppLayout({ children }: LayoutProps<"/">) {
     <AppShell
       basePath=""
       introCount={(count ?? 0) + unreadChats}
-      headerAction={
-        <Link href="/account" className="flex min-h-12 items-center rounded-full px-3 text-sm font-semibold text-ink2 hover:bg-paper2">
-          Account
-        </Link>
-      }
+      headerAction={<AvatarLink name={profile.display_name ?? "You"} href="/account" />}
     >
       {children}
     </AppShell>

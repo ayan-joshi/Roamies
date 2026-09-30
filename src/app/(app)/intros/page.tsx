@@ -61,7 +61,11 @@ export default async function IntrosPage() {
   const sent: SentIntro[] = ((sentRows ?? []) as unknown as SentRow[]).map((s) => ({
     id: s.id,
     name: s.receiver.display_name ?? "A traveller",
-    about: s.itinerary ? `their ${s.itinerary.place.name} trip` : s.user_prompt ? s.user_prompt.prompt.text.replace(/\.\.\.$/, "") : "a removed post",
+    about: s.itinerary
+      ? `On ${s.receiver.display_name ?? "their"}'s trip to ${s.itinerary.place.name}`
+      : s.user_prompt
+        ? `On ${s.receiver.display_name ?? "their"}'s answer: ${s.user_prompt.prompt.text}`
+        : "On a post that was removed",
     message: s.intro_message,
   }));
 

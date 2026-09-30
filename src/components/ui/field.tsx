@@ -1,4 +1,4 @@
-import type { InputHTMLAttributes, ReactNode, SelectHTMLAttributes } from "react";
+import type { ComponentProps, ReactNode, SelectHTMLAttributes } from "react";
 
 // Resting: 1.5px line border. Focus: 2px ink border + lime glow. Error: 2px err border on err-bg.
 export function controlClass(invalid?: boolean, extra = "") {
@@ -41,7 +41,8 @@ export function Field({ id, label, hint, error, children }: FieldProps) {
   );
 }
 
-type InputProps = InputHTMLAttributes<HTMLInputElement> & { invalid?: boolean };
+// ComponentProps includes `ref` (a plain prop in React 19).
+type InputProps = ComponentProps<"input"> & { invalid?: boolean };
 
 export function TextInput({ invalid, className = "", ...rest }: InputProps) {
   return <input {...rest} aria-invalid={invalid || undefined} className={controlClass(invalid, `h-12 px-3.5 ${className}`)} />;

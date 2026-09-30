@@ -65,7 +65,8 @@ export function Pin({ className = "bg-pin", position = "left-1/2 -translate-x-1/
 // Radio marker used on every tappable item so "pick one thing" is obvious.
 // Filled with the note's own text colour; the tick takes the note's background colour,
 // so it reads on paper, lime and pink in both themes.
-export function RadioMarker({ checked, tickClass = "text-paper" }: { checked: boolean; tickClass?: string }) {
+export function RadioMarker({ checked, tickClass = "text-paper", unavailable = false }: { checked: boolean; tickClass?: string; unavailable?: boolean }) {
+  if (unavailable && !checked) return <span aria-hidden className="size-[22px] shrink-0 rounded-full border-2 border-dashed border-ink2" />;
   return checked ? (
     <span aria-hidden className={`flex size-[22px] shrink-0 items-center justify-center rounded-full bg-current text-[13px] font-bold`}>
       <span className={tickClass}>✓</span>

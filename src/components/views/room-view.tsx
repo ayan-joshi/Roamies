@@ -44,7 +44,7 @@ export function RoomView({ backHref, otherName, verified, matchedOn, context, sa
       </header>
 
       <div className="bg-cork px-4 pt-6 pb-5">
-        <Note tone="lime" tilt="slight-left" fixing="pin" className="px-4 pt-4 pb-3.5">
+        <Note tone="lime" fixing="pin" pinned className="px-4 pt-4 pb-3.5">
           <p className="font-mono text-[11px] font-bold tracking-[0.04em]">YOU MATCHED OVER · {context.label}</p>
           <p className={context.handwritten ? "mt-1.5 font-hand text-[17px] leading-[1.25] font-bold" : "mt-1.5 font-mono text-sm font-bold"}>
             {context.body}

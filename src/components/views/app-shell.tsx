@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { ReactNode } from "react";
 import { BottomNav } from "@/components/ui/bottom-nav";
 import { Logo } from "@/components/ui/logo";
@@ -10,6 +11,19 @@ type Props = {
   banner?: ReactNode;
   children: ReactNode;
 };
+
+/** Round initial that opens Account (Claude Design header). */
+export function AvatarLink({ name, href }: { name: string; href: string }) {
+  return (
+    <Link
+      href={href}
+      aria-label="Account"
+      className="flex size-11 items-center justify-center rounded-full bg-paper2 text-base font-extrabold uppercase hover:bg-line"
+    >
+      {(name.trim()[0] ?? "?").toUpperCase()}
+    </Link>
+  );
+}
 
 export function AppShell({ basePath, introCount, headerAction, banner, children }: Props) {
   return (

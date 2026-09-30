@@ -1,5 +1,6 @@
 import { ChipRadioGroup } from "@/components/ui/chip";
-import { DateInput, Field, TextInput } from "@/components/ui/field";
+import { DateRangeFields } from "@/components/date-range-fields";
+import { Field, TextInput } from "@/components/ui/field";
 import { PlacePicker } from "@/components/ui/place-picker";
 import { BUDGETS, VIBES } from "@/lib/constants";
 import type { Place } from "@/lib/types";
@@ -14,14 +15,7 @@ export function TripFields({ places, idPrefix = "trip" }: { places: Place[]; idP
     <div className="flex flex-col gap-5">
       <PlacePicker id={id("place")} name="place_id" label="Destination" places={places} required />
 
-      <div className="grid grid-cols-2 gap-3">
-        <Field id={id("start")} label="Start date">
-          <DateInput id={id("start")} name="start_date" required />
-        </Field>
-        <Field id={id("end")} label="End date">
-          <DateInput id={id("end")} name="end_date" min={today} required />
-        </Field>
-      </div>
+      <DateRangeFields idPrefix={idPrefix} today={today} />
 
       <ChipRadioGroup name="budget" legend="Budget" options={BUDGETS} required />
       <ChipRadioGroup name="vibe" legend="Vibe" options={VIBES} required />

@@ -48,19 +48,23 @@ export function FeedView({ basePath, radiusKm, items, answersByUser, introsLeft,
       {!hasUpcomingTrip ? (
         <EmptyNote
           line="no trip, no feed. post where you're headed and we'll show who else is."
-          action={{ href: `${basePath}/trips`, label: "Add a trip" }}
+          actions={[{ href: `${basePath}/trips/new`, label: "Add a trip" }]}
         />
       ) : items.length === 0 && widerItems.length > 0 ? (
         <>
-          <p className="rounded-sheet bg-paper px-4 py-3 text-[15px] leading-snug">
-            <strong>Nobody within {radiusKm} km yet.</strong> These travellers are further away but on your dates. Plans change, say hi anyway.
-          </p>
-          <FeedList basePath={basePath} items={widerItems} answersByUser={answersByUser} initialLeft={introsLeft} actions={actions} />
+          <div className="flex flex-col gap-1 rounded-sheet bg-paper px-4 py-3">
+            <p className="font-mono text-[11px] font-bold tracking-[0.06em] text-ink2">NOBODY WITHIN {radiusKm} KM</p>
+            <p className="text-[15px] leading-snug">These travellers are further away but on your dates. Plans change, say hi anyway.</p>
+          </div>
+          <FeedList basePath={basePath} items={widerItems} answersByUser={answersByUser} initialLeft={introsLeft} actions={actions} emphasizeDistance />
         </>
       ) : items.length === 0 ? (
         <EmptyNote
           line="no one's heading your way yet. widen the radius or touch grass"
-          action={radiusKm < 100 ? { href: `${basePath}/feed?radius=100`, label: "Try 100 km" } : undefined}
+          actions={[
+            ...(radiusKm < 100 ? [{ href: `${basePath}/feed?radius=100`, label: "Try 100 km" }] : []),
+            { href: `${basePath}/trips`, label: "Edit my trip dates", secondary: radiusKm < 100 },
+          ]}
         />
       ) : (
         <FeedList basePath={basePath} items={items} answersByUser={answersByUser} initialLeft={introsLeft} actions={actions} />
@@ -69,15 +73,20 @@ export function FeedView({ basePath, radiusKm, items, answersByUser, introsLeft,
   );
 }
 
-export function EmptyNote({ line, action }: { line: string; action?: { href: string; label: string } }) {
+type EmptyAction = { href: string; label: string; secondary?: boolean };
+
+// The note carries only the handwritten line; buttons sit flat below it (controls never tilt).
+export function EmptyNote({ line, actions = [] }: { line: string; actions?: EmptyAction[] }) {
   return (
-    <Note tone="paper" tilt="slight-left" fixing="tape" className="mt-6 flex flex-col gap-4 px-5 pt-7 pb-5">
-      <p className="font-hand text-[22px] leading-7 font-bold">{line}</p>
-      {action && (
-        <Link href={action.href} className={buttonClass("primary", "w-full")}>
-          {action.label}
+    <div className="mt-6 flex flex-col gap-4">
+      <Note tone="paper" tilt="slight-left" fixing="tape" className="px-5 pt-7 pb-5">
+        <p className="font-hand text-[22px] leading-7 font-bold">{line}</p>
+      </Note>
+      {actions.map((a) => (
+        <Link key={a.href} href={a.href} className={buttonClass(a.secondary ? "secondary" : "primary", "w-full")}>
+          {a.label}
         </Link>
-      )}
-    </Note>
+      ))}
+    </div>
   );
 }

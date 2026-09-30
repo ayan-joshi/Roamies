@@ -2,6 +2,7 @@ import Link from "next/link";
 import { buttonClass } from "@/components/ui/button";
 import { Logo } from "@/components/ui/logo";
 import { Note, type NoteTilt, type NoteTone } from "@/components/ui/note";
+import { DesktopAside } from "@/components/views/desktop-aside";
 
 const steps: { title: string; body: string; tone: NoteTone; tilt: NoteTilt }[] = [
   { title: "post your trip", body: "kasol, 12 → 18 oct, hostel budget, trekking", tone: "paper", tilt: "slight-left" },
@@ -12,6 +13,7 @@ const steps: { title: string; body: string; tone: NoteTone; tilt: NoteTilt }[] =
 export default function Home() {
   return (
     <main className="flex flex-1 flex-col">
+      <DesktopAside />
       <section className="flex flex-col gap-4 px-6 pt-8 pb-10">
         <Logo size={32} className="mb-4" />
         <p className="font-mono text-xs font-bold tracking-[0.08em] text-ink2">HILLS · BEACHES · EVERYWHERE IN BETWEEN</p>
@@ -38,14 +40,14 @@ export default function Home() {
           <Link href="/login" className={buttonClass("primary", "w-full")}>
             Get started
           </Link>
-          <Link href="/demo" className={buttonClass("ghost", "w-full bg-paper")}>
+          <Link href="/demo" className={buttonClass("secondary", "w-full")}>
             look around first (demo)
           </Link>
           <p className="text-center font-mono text-xs font-medium text-ink">8 SHOTS A DAY · NO LAZY &apos;HI&apos;</p>
-          <p className="flex justify-center gap-4 pt-2 text-xs font-semibold text-ink">
-            <Link href="/privacy" className="underline underline-offset-2">Privacy</Link>
-            <Link href="/terms" className="underline underline-offset-2">Terms and safety</Link>
-            <Link href="/feedback" className="underline underline-offset-2">Feedback</Link>
+          <p className="flex justify-center gap-1 pt-2 text-[13px] font-semibold text-ink">
+            <Link href="/privacy" className="flex min-h-11 items-center px-2 underline underline-offset-2">Privacy</Link>
+            <Link href="/terms" className="flex min-h-11 items-center px-2 underline underline-offset-2">Terms and safety</Link>
+            <Link href="/feedback" className="flex min-h-11 items-center px-2 underline underline-offset-2">Feedback</Link>
           </p>
         </div>
       </section>

@@ -57,11 +57,11 @@ export async function demoAddTrip(_prev: ActionState, form: FormData): Promise<A
     budget_bracket: trip.budget_bracket,
     vibe_tag: trip.vibe_tag,
     note: trip.note,
-    place: { name: place.name },
+    place: { name: place.name, circuit: place.circuit },
   });
   await writeDemoState(state);
   revalidatePath("/demo", "layout");
-  return { ok: true };
+  redirect("/demo/trips?saved=1");
 }
 
 export async function demoDeleteTrip(form: FormData) {

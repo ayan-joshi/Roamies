@@ -157,11 +157,12 @@ export function PlacePicker({ id, name, label, places, required }: Props) {
                 }`}
               >
                 <span>{p.name}</span>
-                <span className={`flex items-center gap-1.5 text-xs ${isSel ? "" : "text-ink2"}`}>
+                <span className={`flex items-center gap-1.5 text-[13px] ${isSel ? "" : "text-ink2"}`}>
                   {p.kind && KIND_LABEL[p.kind] && (
-                    <span className="rounded-full border-[1.5px] border-current px-1.5 font-mono text-[10px] font-bold">{KIND_LABEL[p.kind]}</span>
+                    <span className="rounded-full border-[1.5px] border-ink px-1.5 font-mono text-[11px] font-bold text-ink">{KIND_LABEL[p.kind]}</span>
                   )}
-                  {isSel ? "✓" : p.circuit}
+                  {p.circuit}
+                  {isSel && <span aria-hidden>✓</span>}
                 </span>
               </li>
             );

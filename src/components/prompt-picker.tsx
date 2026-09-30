@@ -28,7 +28,7 @@ export function PromptPicker({ prompts, picked, onToggle, answers = {} }: Props)
           <div
             key={p.id}
             className={`flex flex-col gap-3 rounded-field border-[1.5px] p-3.5 ${
-              on ? "border-ink bg-paper" : locked ? "border-transparent bg-dis-bg text-dis-fg" : "border-line bg-paper"
+              on ? "border-ink bg-paper" : locked ? "border-dashed border-line bg-paper text-ink2" : "border-line bg-paper"
             }`}
           >
             <label className={`flex min-h-6 items-start justify-between gap-3 ${locked ? "cursor-not-allowed" : "cursor-pointer"}`}>
@@ -43,7 +43,7 @@ export function PromptPicker({ prompts, picked, onToggle, answers = {} }: Props)
                 className="peer sr-only"
               />
               <span className="rounded-full peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-ink">
-                <RadioMarker checked={on} />
+                <RadioMarker checked={on} unavailable={locked} />
               </span>
             </label>
             {on && (

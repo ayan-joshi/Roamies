@@ -1,6 +1,6 @@
 import { AccountView } from "@/components/views/account-view";
 import { requireOnboardedUser } from "@/lib/auth";
-import { deleteAccount, setEmailAlerts } from "./actions";
+import { setEmailAlerts } from "./actions";
 
 export default async function AccountPage() {
   const { supabase, userId, profile } = await requireOnboardedUser();
@@ -13,14 +13,8 @@ export default async function AccountPage() {
     <AccountView
       name={profile.display_name ?? "You"}
       email={email}
-      deleteAccount={deleteAccount}
       emailAlerts={typeof prefs?.email_alerts === "boolean" ? prefs.email_alerts : null}
       setEmailAlerts={setEmailAlerts}
-      signOut={
-        <form action="/auth/signout" method="post">
-          <button className="flex min-h-12 w-full items-center rounded-field px-1 font-semibold hover:bg-paper2">Sign out</button>
-        </form>
-      }
     />
   );
 }

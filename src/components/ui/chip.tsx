@@ -22,7 +22,7 @@ type ChipGroupProps = {
 export function ChipRadioGroup({ name, legend, options, defaultValue, required, error, spaced = true }: ChipGroupProps) {
   return (
     <fieldset className="flex flex-col gap-2">
-      <legend className="mb-2 text-[13px] leading-[18px] font-bold">{legend}</legend>
+      <legend className="mb-1.5 text-[13px] leading-[18px] font-bold">{legend}</legend>
       <div className="flex flex-wrap gap-2">
         {options.map((option) => (
           <label

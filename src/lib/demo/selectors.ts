@@ -36,6 +36,6 @@ export function demoIntrosFor(state: DemoState) {
         .map((i) => withPreview(i.id, i.sender.display_name ?? "A traveller")),
       ...DEMO_EXISTING_MATCHES.map((m) => withPreview(m.id, m.name)),
     ],
-    sent: state.sent.map((userId, i) => ({ id: i + 1, name: demoPersonName(userId), about: "their trip or prompt", message: "your intro" })),
+    sent: state.sent.map((userId, i) => ({ id: i + 1, name: demoPersonName(userId), about: `On ${demoPersonName(userId)}'s trip or answer`, message: "Your intro is waiting for a reply." })),
   };
 }

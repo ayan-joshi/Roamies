@@ -11,10 +11,11 @@ type Props = {
   answersByUser: Record<string, PromptAnswer[]>;
   initialLeft: number;
   actions: FeedActions;
+  emphasizeDistance?: boolean;
 };
 
 // Owns the "shots left" counter so it updates the moment an intro is pinned.
-export function FeedList({ basePath, items, answersByUser, initialLeft, actions }: Props) {
+export function FeedList({ basePath, items, answersByUser, initialLeft, actions, emphasizeDistance }: Props) {
   const [left, setLeft] = useState(initialLeft);
   // Hide skipped cards immediately instead of waiting for the server refresh.
   const [skipped, setSkipped] = useState<string[]>([]);
@@ -51,6 +52,7 @@ export function FeedList({ basePath, items, answersByUser, initialLeft, actions 
               shotNumber={DAILY_INTROS - left + 1}
               actions={actions}
               reportHref={`${basePath}/safety/${item.user_id}`}
+              emphasizeDistance={emphasizeDistance}
               onSending={() => keepInPlace(item, index)}
               onSent={setLeft}
               onSkipped={(id) => setSkipped((cur) => [...cur, id])}

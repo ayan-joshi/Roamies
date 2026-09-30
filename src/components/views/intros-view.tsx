@@ -34,16 +34,16 @@ export function IntrosView({ basePath, pending, matches, sent, respond }: Intros
           {pending.map((intro, i) => {
             const sender = intro.sender.display_name ?? "A traveller";
             const context = intro.itinerary
-              ? { label: "YOUR TRIP", body: `${intro.itinerary.place.name} · ${formatRange(intro.itinerary.start_date, intro.itinerary.end_date)}`, hand: false }
+              ? { label: "Your trip", body: `${intro.itinerary.place.name} · ${formatRange(intro.itinerary.start_date, intro.itinerary.end_date)}`, hand: false }
               : intro.user_prompt
-                ? { label: intro.user_prompt.prompt.text.toUpperCase(), body: intro.user_prompt.answer, hand: true }
-                : { label: "YOUR POST", body: "This was removed.", hand: false };
+                ? { label: intro.user_prompt.prompt.text, body: intro.user_prompt.answer, hand: true }
+                : { label: "Your post", body: "This was removed.", hand: false };
 
             return (
               <li key={intro.id} className="flex flex-col">
                 {/* What they replied to */}
                 <Note tone={i % 2 ? "pink" : "lime"} tilt={i % 2 ? "left" : "right"} className="mr-10 px-3.5 pt-3.5 pb-8">
-                  <p className="font-mono text-[11px] font-bold tracking-[0.04em]">{context.label}</p>
+                  <p className="text-xs leading-[1.3] font-semibold">{context.label}</p>
                   <p className={context.hand ? "mt-1.5 font-hand text-[17px] leading-[1.25] font-bold" : "mt-1.5 font-mono text-sm font-bold"}>
                     {context.body}
                   </p>
@@ -58,7 +58,7 @@ export function IntrosView({ basePath, pending, matches, sent, respond }: Intros
                   <p className="text-[15px] leading-[1.45]">{intro.intro_message}</p>
                   <form action={respond} className="flex gap-2">
                     <input type="hidden" name="interaction_id" value={intro.id} />
-                    <Button name="status" value="declined" variant="ghost" className="bg-paper2">
+                    <Button name="status" value="declined" variant="secondary">
                       not my vibe
                     </Button>
                     <Button name="status" value="accepted" className="flex-1">
@@ -93,14 +93,19 @@ export function IntrosView({ basePath, pending, matches, sent, respond }: Intros
                   className="flex min-h-16 items-center justify-between gap-3 rounded-sheet bg-paper px-4 py-2.5 hover:bg-paper2"
                 >
                   <span className="min-w-0 flex-1">
-                    <span className={`block ${m.unread ? "font-extrabold" : "font-bold"}`}>{m.name}</span>
+                    <span className={`flex items-center gap-2 ${m.unread ? "font-extrabold" : "font-bold"}`}>
+                      {m.name}
+                      {!m.lastBody && (
+                        <span className="rounded-full bg-lime px-1.5 font-mono text-[11px] font-bold tracking-[0.04em] text-note-ink">NEW MATCH</span>
+                      )}
+                    </span>
                     {m.lastBody ? (
                       <span className={`block truncate text-sm ${m.unread ? "font-semibold text-ink" : "text-ink2"}`}>
                         {m.lastFromMe ? "You: " : ""}
                         {m.lastBody}
                       </span>
                     ) : (
-                      <span className="block font-hand text-[17px] font-bold">it&apos;s a trip, say hi</span>
+                      <span className="block text-sm text-ink2">New match. Say hi and start planning.</span>
                     )}
                   </span>
                   {m.unread && (
@@ -129,7 +134,7 @@ export function IntrosView({ basePath, pending, matches, sent, respond }: Intros
                   <span className="font-bold">{s.name}</span>
                   <span className="font-mono text-[11px] font-bold tracking-[0.06em] text-ink2">WAITING</span>
                 </p>
-                <p className="font-mono text-[11px] font-bold tracking-[0.04em] text-ink2">ON {s.about.toUpperCase()}</p>
+                <p className="text-[13px] font-semibold text-ink2">{s.about}</p>
                 <p className="line-clamp-2 text-sm text-ink2">&ldquo;{s.message}&rdquo;</p>
               </li>
             ))}

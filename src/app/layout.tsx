@@ -33,7 +33,7 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${bricolage.variable} ${jetbrains.variable} ${kalam.variable} antialiased`}>
-      <body className="bg-paper2 font-sans text-[15px] leading-[22px]">
+      <body className="bg-paper2 font-sans text-[15px] leading-[22px] lg:bg-cork">
         {/* Phone-width app frame; on desktop it sits centred like a device. */}
         <div className="mx-auto flex min-h-dvh w-full max-w-md flex-col bg-bg shadow-sheet">{children}</div>
       </body>

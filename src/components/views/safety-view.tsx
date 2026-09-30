@@ -59,8 +59,12 @@ export function SafetyView({ personId, personName, matchId, backHref, doneHref, 
             <TextareaWithCount id="details" name="details" max={500} placeholder="Anything that helps us understand, e.g. what was said" />
           </div>
 
-          <label className="flex min-h-12 cursor-pointer items-center gap-3 rounded-field border-[1.5px] border-line bg-paper px-3.5 py-3 has-[:checked]:border-ink">
-            <input type="checkbox" name="block" defaultChecked className="size-5 accent-[var(--ink)]" />
+          <label className="flex min-h-12 cursor-pointer items-center gap-3 rounded-field border-[1.5px] border-line bg-paper px-3.5 py-3 has-[:checked]:border-ink has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-ink">
+            <input type="checkbox" name="block" defaultChecked className="peer sr-only" />
+            {/* Kit checkbox: 22px square, ink fill, paper tick (matches the radio marker). */}
+            <span aria-hidden className="flex size-[22px] shrink-0 items-center justify-center rounded-[5px] border-2 border-ink text-[13px] font-bold text-transparent peer-checked:bg-ink peer-checked:text-paper">
+              ✓
+            </span>
             <span>
               <span className="block font-bold">Also block {personName}</span>
               <span className="block text-[13px] text-ink2">You can&apos;t undo this from the app yet.</span>
@@ -69,12 +73,13 @@ export function SafetyView({ personId, personName, matchId, backHref, doneHref, 
 
           {state?.error && <Notice tone="error">{state.error}</Notice>}
 
+          <Notice tone="info">
+            In danger right now? Call <span className="font-mono">112</span>. Women&apos;s helpline: <span className="font-mono">1091</span>.
+          </Notice>
+
           <Button type="submit" loading={pending} loadingLabel="Sending…">
             Submit
           </Button>
-          <p className="text-[13px] leading-snug text-ink2">
-            If you&apos;re in danger right now, call <strong>112</strong> (India emergency). For women&apos;s safety, <strong>1091</strong>.
-          </p>
         </form>
       )}
     </main>

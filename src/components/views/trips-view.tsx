@@ -1,55 +1,70 @@
-import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { buttonClass } from "@/components/ui/button";
 import { Tag } from "@/components/ui/chip";
-import { formatRange, spaced } from "@/lib/format";
-import type { ActionState, Place, Trip } from "@/lib/types";
-import { AddTripForm } from "./add-trip-form";
+import { Note } from "@/components/ui/note";
+import { Notice } from "@/components/ui/notice";
+import { formatDay, formatRange, spaced } from "@/lib/format";
+import type { Trip } from "@/lib/types";
+import { DeleteTripButton } from "./delete-trip-button";
+import { EmptyNote } from "./feed-view";
 
 export type TripsViewProps = {
+  basePath: string;
   trips: Trip[];
-  places: Place[];
-  addTrip: (prev: ActionState, form: FormData) => Promise<ActionState>;
+  /** Today in IST as YYYY-MM-DD, for "IN 12 DAYS" / "ON NOW". */
+  today: string;
+  saved?: boolean;
   deleteTrip: (form: FormData) => Promise<void>;
 };
 
-export function TripsView({ trips, places, addTrip, deleteTrip }: TripsViewProps) {
-  return (
-    <main className="flex flex-1 flex-col gap-8 px-4 pt-5 pb-8">
-      <section aria-labelledby="trips-heading" className="flex flex-col gap-3">
-        <h1 id="trips-heading" className="text-[28px] leading-8 font-extrabold tracking-[-0.01em]">
-          My trips
-        </h1>
-        {trips.length === 0 && <p className="text-ink2">No upcoming trips. Add one below to show up in feeds.</p>}
-        <ul className="flex flex-col gap-3">
-          {trips.map((t) => (
-            <li key={t.id} className="flex flex-col gap-2.5 rounded-sheet border-[1.5px] border-line bg-paper p-4">
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <p className="text-xl leading-[26px] font-bold">{t.place.name}</p>
-                  <p className="font-mono text-xs font-bold tracking-[0.04em]">{formatRange(t.start_date, t.end_date)}</p>
-                </div>
-                <form action={deleteTrip}>
-                  <input type="hidden" name="trip_id" value={t.id} />
-                  <Button variant="ghost" className="px-3 text-sm" aria-label={`Delete trip to ${t.place.name}`}>
-                    Delete
-                  </Button>
-                </form>
-              </div>
-              <div className="flex flex-wrap gap-1.5">
-                <Tag>{spaced(t.budget_bracket)}</Tag>
-                <Tag>{spaced(t.vibe_tag)}</Tag>
-              </div>
-              {t.note && <p className="text-ink2">{t.note}</p>}
-            </li>
-          ))}
-        </ul>
-      </section>
+function daysBetween(from: string, to: string) {
+  return Math.round((Date.parse(`${to}T00:00:00Z`) - Date.parse(`${from}T00:00:00Z`)) / 86_400_000);
+}
 
-      <section aria-labelledby="add-heading" className="flex flex-col gap-4 rounded-sheet bg-paper p-4">
-        <h2 id="add-heading" className="text-xl leading-[26px] font-bold">
-          Add a trip
-        </h2>
-        <AddTripForm places={places} addTrip={addTrip} />
-      </section>
+function status(t: Trip, today: string) {
+  if (t.start_date <= today) return `ON NOW · UNTIL ${formatDay(t.end_date)}`;
+  const d = daysBetween(today, t.start_date);
+  return `UPCOMING · ${d === 1 ? "TOMORROW" : `IN ${d} DAYS`}`;
+}
+
+// Each trip is the same paper note people see in their feed, so this screen previews your card (Claude Design 07a).
+export function TripsView({ basePath, trips, today, saved, deleteTrip }: TripsViewProps) {
+  return (
+    <main className="flex flex-1 flex-col gap-4 bg-cork px-4 pt-5 pb-8">
+      <div className="flex items-center justify-between gap-3">
+        <h1 className="text-[28px] leading-8 font-extrabold tracking-[-0.01em] text-ink">My trips</h1>
+        <Link href={`${basePath}/trips/new`} className={buttonClass("primary", "px-4")}>
+          + Add a trip
+        </Link>
+      </div>
+
+      {saved && <Notice tone="info">Trip saved. It shows up in feeds within a minute.</Notice>}
+
+      {trips.length === 0 ? (
+        <EmptyNote line="no trip, no feed. post where you're headed and we'll show who else is." actions={[{ href: `${basePath}/trips/new`, label: "Add a trip" }]} />
+      ) : (
+        <>
+          <p className="font-mono text-[11px] font-bold tracking-[0.06em] text-ink">THIS IS HOW YOUR TRIP LOOKS IN OTHER PEOPLE&apos;S FEEDS</p>
+          <ul className="flex flex-col gap-8 pt-2">
+            {trips.map((t, i) => (
+              <li key={t.id} className="flex flex-col gap-3">
+                <Note tone="paper" tilt={i % 2 ? "slight-right" : "slight-left"} fixing={i % 2 ? "pin" : "tape"} className="px-4 pt-6 pb-4">
+                  <p className="font-mono text-xs font-semibold tracking-[0.06em] text-ink2">{status(t, today)}</p>
+                  <p className="mt-1 text-[40px] leading-[1.05] font-extrabold tracking-[-0.02em]">{t.place.name}</p>
+                  {t.place.circuit && <p className="text-sm font-medium text-ink2">{t.place.circuit}</p>}
+                  <p className="mt-1 font-mono text-sm font-bold">{formatRange(t.start_date, t.end_date)}</p>
+                  <div className="mt-2.5 flex flex-wrap gap-1.5">
+                    <Tag>{spaced(t.budget_bracket)}</Tag>
+                    <Tag>{spaced(t.vibe_tag)}</Tag>
+                  </div>
+                  {t.note && <p className="mt-2.5 font-hand text-lg leading-[1.3]">{t.note}</p>}
+                </Note>
+                <DeleteTripButton tripId={t.id} place={t.place.name} deleteTrip={deleteTrip} />
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
     </main>
   );
 }

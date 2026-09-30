@@ -53,7 +53,7 @@ export function demoBaseTrips(): Trip[] {
       budget_bracket: "Hostel/Budget",
       vibe_tag: "Trekking/Adventure",
       note: "first time in parvati valley, want a trek buddy",
-      place: { name: "Manali" },
+      place: { name: "Manali", circuit: "Himachal" },
     },
   ];
 }

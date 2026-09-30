@@ -1,10 +1,11 @@
 import { TripsView } from "@/components/views/trips-view";
-import { DEMO_PLACES } from "@/lib/demo/data";
 import { demoTrips } from "@/lib/demo/selectors";
 import { readDemoState } from "@/lib/demo/state";
-import { demoAddTrip, demoDeleteTrip } from "../../actions";
+import { todayIST } from "@/lib/forms";
+import { demoDeleteTrip } from "../../actions";
 
-export default async function DemoTripsPage() {
+export default async function DemoTripsPage({ searchParams }: PageProps<"/demo/trips">) {
+  const { saved } = await searchParams;
   const trips = demoTrips(await readDemoState());
-  return <TripsView trips={trips} places={DEMO_PLACES} addTrip={demoAddTrip} deleteTrip={demoDeleteTrip} />;
+  return <TripsView basePath="/demo" trips={trips} today={todayIST()} saved={saved === "1"} deleteTrip={demoDeleteTrip} />;
 }

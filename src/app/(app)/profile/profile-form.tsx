@@ -44,7 +44,7 @@ export function ProfileForm({ name, homeCity, prompts, answers }: Props) {
         </Field>
 
         <fieldset className="flex flex-col gap-3">
-          <legend className="mb-2 text-[13px] leading-[18px] font-bold">Your 2 prompts</legend>
+          <legend className="mb-1.5 text-[13px] leading-[18px] font-bold">Your 2 prompts</legend>
           <PromptPicker prompts={prompts} picked={picked} answers={answers} onToggle={(id) => setPicked((cur) => togglePicked(cur, id))} />
         </fieldset>
 

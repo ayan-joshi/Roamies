@@ -93,6 +93,8 @@ export function ChatRoom({ matchId, myId, otherName, initialMessages, send, mode
           const mine = m.sender_id === myId;
           const prev = messages[i - 1];
           const grouped = prev && prev.sender_id === m.sender_id;
+          const next = messages[i + 1];
+          const lastOfRun = !next || next.sender_id !== m.sender_id;
           return (
             <li key={m.id} className={`flex flex-col ${mine ? "items-end" : "items-start"} ${grouped ? "" : "mt-2"}`}>
               <p
@@ -105,9 +107,11 @@ export function ChatRoom({ matchId, myId, otherName, initialMessages, send, mode
                 <span className="sr-only">{mine ? "You: " : `${otherName}: `}</span>
                 {m.body}
               </p>
-              <time dateTime={m.created_at} className="mt-1 px-1 font-mono text-[11px] font-medium text-ink2">
-                {time.format(new Date(m.created_at))}
-              </time>
+              {lastOfRun && (
+                <time dateTime={m.created_at} className="mt-1 px-1 font-mono text-[11px] font-medium text-ink2">
+                  {time.format(new Date(m.created_at))}
+                </time>
+              )}
             </li>
           );
         })}
